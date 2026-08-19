@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "Base64 Link Decoder",
+  "version": "1.0.0",
+  "description": "Decode a selected base64 string right on the page and open the resulting link directly, no external decoder site needed.",
+  "permissions": ["contextMenus", "activeTab", "scripting"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

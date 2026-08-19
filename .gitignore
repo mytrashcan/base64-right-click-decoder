@@ -1,0 +1,9 @@
+# OS / editor
+.DS_Store
+*.log
+node_modules/
+.idea/
+.vscode/
+
+# zip bundle (built artifact, not source)
+*.zip
