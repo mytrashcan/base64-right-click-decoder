@@ -139,7 +139,7 @@
   // Decode with auto-detection.
   function autoDecode(s, preferText) {
     const kind = detect(s, preferText);
-    if (!kind) return { ok: false, error: "형식을 감지할 수 없습니다", detected: null };
+    if (!kind) return { ok: false, error: "Could not detect the format", detected: null };
     let r;
     switch (kind) {
       case "base64": r = decodeBase64(s); break;

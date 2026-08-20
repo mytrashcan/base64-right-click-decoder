@@ -11,12 +11,12 @@ chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.removeAll(() => {
     chrome.contextMenus.create({
       id: MENU_OPEN,
-      title: "디코드 → 링크 열기",
+      title: "Decode → Open Link",
       contexts: ["selection"],
     });
     chrome.contextMenus.create({
       id: MENU_COPY,
-      title: "디코드 → 결과 복사",
+      title: "Decode → Copy Result",
       contexts: ["selection"],
     });
   });
@@ -80,20 +80,20 @@ function renderOverlay(payload) {
     return b;
   };
 
-  const copyBtn = mkBtn("복사", () => {
+  const copyBtn = mkBtn("Copy", () => {
     navigator.clipboard.writeText(payload.copyText).then(() => {
-      copyBtn.textContent = "복사됨 ✓";
+      copyBtn.textContent = "Copied ✓";
     }).catch(() => {
-      copyBtn.textContent = "복사 실패";
+      copyBtn.textContent = "Copy failed";
     });
   });
 
   const row2 = document.createElement("div");
   row2.style.cssText = "display:flex;gap:8px;";
-  const openBtn = mkBtn("링크 열기", () => {
+  const openBtn = mkBtn("Open Link", () => {
     window.open(payload.urlToOpen, "_blank");
   });
-  const closeBtn = mkBtn("닫기", () => ov.remove());
+  const closeBtn = mkBtn("Close", () => ov.remove());
   closeBtn.style.background = "#3a4160";
 
   row.appendChild(copyBtn);
@@ -105,7 +105,7 @@ function renderOverlay(payload) {
   ov.appendChild(row);
   if (payload.hex) {
     const hexLabel = document.createElement("div");
-    hexLabel.textContent = "HEX 덤프:";
+    hexLabel.textContent = "HEX dump:";
     hexLabel.style.cssText = "font-weight:700;margin:10px 0 4px;";
     const hexBody = document.createElement("div");
     hexBody.style.cssText =
@@ -129,7 +129,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 
   const res = Decoder.autoDecode(info.selectionText, false);
   if (!res.ok) {
-    alertInTab(tab.id, "디코드 실패 — 선택한 텍스트의 인코딩(base64/URL/HTML/hex)을 감지하거나 디코드할 수 없습니다.\n\n" + (res.error || ""));
+    alertInTab(tab.id, "Decode failed — could not detect or decode the encoding (base64/URL/HTML/hex) of the selected text.\n\n" + (res.error || ""));
     return;
   }
 
@@ -144,7 +144,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
   }
 
   const payload = {
-    title: isImage ? "이미지 미리보기" : "디코드 결과",
+    title: isImage ? "Image Preview" : "Decoded Result",
     icon: "🔓",
     kind: res.detected,
     displayText: isImage ? "" : decodedText,

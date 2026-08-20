@@ -49,13 +49,13 @@
       b.onclick = fn;
       return b;
     };
-    const copyBtn = mkBtn("복사", () => {
+    const copyBtn = mkBtn("Copy", () => {
       navigator.clipboard.writeText(payload.copyText).then(() => {
-        copyBtn.textContent = "복사됨 ✓";
-      }).catch(() => { copyBtn.textContent = "복사 실패"; });
+        copyBtn.textContent = "Copied ✓";
+      }).catch(() => { copyBtn.textContent = "Copy failed"; });
     });
-    const openBtn = mkBtn("링크 열기", () => window.open(payload.urlToOpen, "_blank"));
-    const closeBtn = mkBtn("닫기", () => ov.remove());
+    const openBtn = mkBtn("Open Link", () => window.open(payload.urlToOpen, "_blank"));
+    const closeBtn = mkBtn("Close", () => ov.remove());
     closeBtn.style.background = "#3a4160";
 
     row.appendChild(copyBtn);
@@ -67,7 +67,7 @@
     ov.appendChild(row);
     if (payload.hex) {
       const hexLabel = document.createElement("div");
-      hexLabel.textContent = "HEX 덤프:";
+      hexLabel.textContent = "HEX dump:";
       hexLabel.style.cssText = "font-weight:700;margin:10px 0 4px;";
       const hexBody = document.createElement("div");
       hexBody.style.cssText =
@@ -84,7 +84,7 @@
     const isImage = Decoder.looksLikeImage(src.text);
     const isUrl = isImage || Decoder.looksLikeUrl(src.text);
     return {
-      title: isImage ? "이미지 미리보기" : "디코드 결과",
+      title: isImage ? "Image Preview" : "Decoded Result",
       icon: "🔓",
       kind: kind,
       displayText: isImage ? "" : (src.binary ? null : src.text),
@@ -128,7 +128,7 @@
     tt.textContent = "";
 
     const head = document.createElement("div");
-    head.textContent = "🔓 " + res.detected + " 디코드";
+    head.textContent = "🔓 " + res.detected + " decoded";
     head.style.cssText = "font-weight:700;margin-bottom:6px;";
 
     const pre = document.createElement("div");
@@ -153,21 +153,21 @@
     const isUrl = Decoder.looksLikeUrl(res.text);
     const isImage = Decoder.looksLikeImage(res.text);
 
-    const openBtn = mkBtn("열기", () => {
+    const openBtn = mkBtn("Open", () => {
       let u = res.text.trim();
       if (/^www\./i.test(u)) u = "http://" + u;
       window.open(u, "_blank");
     }, true);
-    const copyBtn = mkBtn("복사", () => {
+    const copyBtn = mkBtn("Copy", () => {
       navigator.clipboard.writeText(res.binary ? Decoder.bytesToHex(res.bytes) : res.text).then(() => {
-        copyBtn.textContent = "복사됨 ✓";
+        copyBtn.textContent = "Copied ✓";
       });
     }, true);
-    const moreBtn = mkBtn("자세히", () => {
+    const moreBtn = mkBtn("Details", () => {
       renderOverlayInto(document.documentElement, buildPayload(res, res.detected));
       hideTooltip();
     });
-    const closeBtn = mkBtn("닫기", hideTooltip);
+    const closeBtn = mkBtn("Close", hideTooltip);
 
     if (isUrl && !isImage) row.appendChild(openBtn);
     row.appendChild(copyBtn);

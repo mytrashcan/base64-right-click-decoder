@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Base64 Right-Click Decoder",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Decode base64 / URL / HTML / hex selected on any page right there — open the result as a link, preview an image, or copy it. No external decoder site needed.",
   "permissions": ["contextMenus", "activeTab", "scripting"],
   "background": {
