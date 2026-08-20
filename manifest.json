@@ -1,12 +1,19 @@
 {
   "manifest_version": 3,
   "name": "Base64 Right-Click Decoder",
-  "version": "1.0.1",
-  "description": "Decode a selected base64 string right on the page and open the resulting link directly, no external decoder site needed.",
+  "version": "1.1.0",
+  "description": "Decode base64 / URL / HTML / hex selected on any page right there — open the result as a link, preview an image, or copy it. No external decoder site needed.",
   "permissions": ["contextMenus", "activeTab", "scripting"],
   "background": {
     "service_worker": "background.js"
   },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["decode.js", "content.js"],
+      "run_at": "document_idle"
+    }
+  ],
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
