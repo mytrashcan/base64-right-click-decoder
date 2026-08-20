@@ -1,4 +1,4 @@
-# Base64 Link Decoder
+# Base64 Right-Click Decoder
 
 웹페이지에서 보이는 base64 문자열을 **페이지 위에서 바로 디코드**하고, 결과 링크에 별도 디코더 사이트 접속 없이 바로 접속하는 크롬 확장 프로그램입니다.
 
