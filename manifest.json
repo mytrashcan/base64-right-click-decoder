@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "Base64 Link Decoder",
-  "version": "1.0.0",
+  "name": "Base64 Right-Click Decoder",
+  "version": "1.0.1",
   "description": "Decode a selected base64 string right on the page and open the resulting link directly, no external decoder site needed.",
   "permissions": ["contextMenus", "activeTab", "scripting"],
   "background": {

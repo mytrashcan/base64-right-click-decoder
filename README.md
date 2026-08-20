@@ -1,4 +1,4 @@
-# Base64 Link Decoder
+# Base64 Right-Click Decoder
 
 Decode a base64 string you see on any webpage **right on the page** and open the resulting link directly — no need to visit an external decoder site.
 
