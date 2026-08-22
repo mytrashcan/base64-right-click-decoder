@@ -98,6 +98,21 @@ function renderOverlay(payload) {
 
   row.appendChild(copyBtn);
   if (payload.urlToOpen) row.appendChild(openBtn);
+  if (payload.sourceText) {
+    let showingOriginal = false;
+    const origBtn = mkBtn("View Original", () => {
+      showingOriginal = !showingOriginal;
+      if (showingOriginal) {
+        origBtn.textContent = "View Decoded";
+        textNode.textContent = payload.sourceText;
+      } else {
+        origBtn.textContent = "View Original";
+        textNode.textContent = payload.displayText || "(binary data — see hex below)";
+      }
+    });
+    origBtn.style.background = "#3a4160";
+    row.appendChild(origBtn);
+  }
   row.appendChild(closeBtn);
 
   ov.appendChild(title);
@@ -127,7 +142,7 @@ function openUrl(tab, url) {
 chrome.contextMenus.onClicked.addListener((info, tab) => {
   if (info.menuItemId !== MENU_OPEN && info.menuItemId !== MENU_COPY) return;
 
-  const res = Decoder.autoDecode(info.selectionText, false);
+  const res = Decoder.autoDecode(info.selectionText, false, true);
   if (!res.ok) {
     alertInTab(tab.id, "Decode failed — could not detect or decode the encoding (base64/URL/HTML/hex) of the selected text.\n\n" + (res.error || ""));
     return;
@@ -152,6 +167,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
     copyText: isImage ? decodedText : (decodedText || Decoder.bytesToHex(res.bytes)),
     urlToOpen: isUrl && !isImage ? decodedText : null,
     hex: res.binary ? Decoder.bytesToHex(res.bytes) : null,
+    sourceText: info.selectionText,
   };
 
   chrome.scripting.executeScript({
