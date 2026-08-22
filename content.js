@@ -60,6 +60,21 @@
 
     row.appendChild(copyBtn);
     if (payload.urlToOpen) row.appendChild(openBtn);
+    if (payload.sourceText) {
+      let showingOriginal = false;
+      const origBtn = mkBtn("View Original", () => {
+        showingOriginal = !showingOriginal;
+        if (showingOriginal) {
+          origBtn.textContent = "View Decoded";
+          textNode.textContent = payload.sourceText;
+        } else {
+          origBtn.textContent = "View Original";
+          textNode.textContent = payload.displayText || "(binary data — see hex below)";
+        }
+      });
+      origBtn.style.background = "#3a4160";
+      row.appendChild(origBtn);
+    }
     row.appendChild(closeBtn);
 
     ov.appendChild(title);
@@ -80,7 +95,7 @@
     document.documentElement.appendChild(ov);
   }
 
-  function buildPayload(src, kind) {
+  function buildPayload(src, kind, raw) {
     const isImage = Decoder.looksLikeImage(src.text);
     const isUrl = isImage || Decoder.looksLikeUrl(src.text);
     return {
@@ -92,6 +107,7 @@
       copyText: src.binary ? Decoder.bytesToHex(src.bytes) : src.text,
       urlToOpen: isUrl && !isImage ? src.text : null,
       hex: src.binary ? Decoder.bytesToHex(src.bytes) : null,
+      sourceText: raw,
     };
   }
 
@@ -128,7 +144,7 @@
     tt.textContent = "";
 
     const head = document.createElement("div");
-    head.textContent = "🔓 " + res.detected + " decoded";
+    head.textContent = "🔓 " + res.detected + " decoded" + (res.layers > 1 ? " 🔁 ×" + res.layers : "");
     head.style.cssText = "font-weight:700;margin-bottom:6px;";
 
     const pre = document.createElement("div");
@@ -164,7 +180,7 @@
       });
     }, true);
     const moreBtn = mkBtn("Details", () => {
-      renderOverlayInto(document.documentElement, buildPayload(res, res.detected));
+      renderOverlayInto(document.documentElement, buildPayload(res, res.detected, raw));
       hideTooltip();
     });
     const closeBtn = mkBtn("Close", hideTooltip);
@@ -198,7 +214,7 @@
     const s = sel.toString().trim();
     if (!s || s.length > TOOLTIP_MAX) { hideTooltip(); return; }
 
-    const res = Decoder.autoDecode(s, true);
+    const res = Decoder.autoDecode(s, true, true);
     if (!res || !res.ok) { hideTooltip(); return; }
 
     const rect = sel.getRangeAt(0).getBoundingClientRect();

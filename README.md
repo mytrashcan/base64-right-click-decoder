@@ -10,6 +10,8 @@ Decode a base64 / URL / HTML / hex string you see on any webpage **right on the 
 - **Binary safe**: if base64/hex decodes to binary (not readable text), it shows a **hex dump** instead of a decode error.
 - **Image preview**: if the decoded result is a `data:image/...` URL, it renders the image inline.
 - **Selection tooltip**: drag-select encoded text and a tooltip appears instantly with the decoded result, open/copy/details buttons.
+- **Double-encoding decode**: if the decoded text is itself another encoded string (e.g. `base64(base64(url))`), it decodes a **second layer** automatically — so a twice-encoded link resolves straight to the real URL.
+- **View original**: in the result overlay, tap **"View Original"** to show the encoded input text (toggling back with "View Decoded"), handy for inspecting or copying the raw string.
 - Handles line breaks / whitespace, URL-safe base64 (`-` `_`), and missing padding.
 - Everything runs locally. **No data collection, no analytics, no remote code.**
 

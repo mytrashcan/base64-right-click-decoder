@@ -136,8 +136,8 @@
     return null;
   }
 
-  // Decode with auto-detection.
-  function autoDecode(s, preferText) {
+  // Decode with auto-detection (single layer).
+  function decodeOnce(s, preferText) {
     const kind = detect(s, preferText);
     if (!kind) return { ok: false, error: "Could not detect the format", detected: null };
     let r;
@@ -149,6 +149,38 @@
     }
     r.detected = kind;
     return r;
+  }
+
+  // Decode a second layer when the decoded text is itself another encoded
+  // string (double-encoded base64, base64-of-URL, etc.). Capped at 2 layers.
+  // Returns the layer-2 result with `.layers` and `.chain` describing the pass.
+  function decodeNested(s, preferText) {
+    const first = decodeOnce(s, preferText);
+    if (!first.ok) return first;
+    first.layers = 1;
+    first.chain = [{ kind: first.detected, text: first.binary ? null : first.text }];
+
+    // Only descend when the layer-1 result is readable text — re-decoding
+    // binary would just produce junk.
+    if (first.binary || !first.text) return first;
+    const outer = first.text.trim();
+    // Don't descend into something that's already a clickable URL / data image.
+    if (looksLikeUrl(outer) || looksLikeImage(outer)) return first;
+
+    const kind2 = detect(outer, false);
+    if (!kind2) return first;
+    const second = decodeOnce(outer, false);
+    if (!second.ok || second.binary) return first; // unreliable descent → keep layer 1
+
+    second.layers = 2;
+    second.chain = first.chain.concat([{ kind: kind2, text: second.text }]);
+    second.detected = kind2; // effective final format
+    return second;
+  }
+
+  // Public entry point. `deep` enables double-encoding decoding (2-layer pass).
+  function autoDecode(s, preferText, deep) {
+    return deep ? decodeNested(s, preferText) : decodeOnce(s, preferText);
   }
 
   // A decoded result that should be treated as a clickable URL.
@@ -172,6 +204,8 @@
     decodeHex: decodeHex,
     detect: detect,
     autoDecode: autoDecode,
+    decodeOnce: decodeOnce,
+    decodeNested: decodeNested,
     bytesToHex: bytesToHex,
     bytesToUtf8: bytesToUtf8,
     looksLikeUrl: looksLikeUrl,
